@@ -11,6 +11,7 @@
         <div class=" flex gap-5">
           <RouterLink to="/" class=" text-white font-semibold">Notas</RouterLink>
           <RouterLink to="/categories" class=" text-white font-semibold">Categorias</RouterLink>
+          <ButtonComponent @click="logout" title="Cerrar sesion" own-style="" />
 
           <RouterLink to="/vs" class=" text-white font-semibold">Watch</RouterLink>
 
@@ -30,4 +31,40 @@
   </div>
 </template>
 <script setup lang="ts">
+import ButtonComponent from '@/components/common/ButtonComponent.vue'
+import { userApiSlice } from '@/stores/users/userApiSlice.ts'
+import { userStore } from '@/stores/users/userStore.ts'
+import { useRouter } from 'vue-router'
+import Swal from 'sweetalert2'
+
+const router = useRouter()
+const userApi = userApiSlice()
+const userStorage = userStore()
+const token = localStorage.getItem('userToken') || ''
+
+const logout = async () => {
+  const exitApi = await userApi.logout(token)
+
+  const responseStatus = {
+    200:  {
+      icon: 'success',
+      title: 'saliendo de la aplicacion',
+      text: 'redirigiendo...  ',
+    },
+    default:{
+
+      icon: 'error',
+      title: 'oops',
+      text: 'ah ocurrido un error  ',
+    }
+  }
+  Swal.fire(responseStatus[exitApi.status] || responseStatus.default)
+  if(exitApi.status == 200){
+    router.push('/')
+    const exit = await userStorage.logoutLocalStorage()
+
+  }
+
+}
+
 </script>

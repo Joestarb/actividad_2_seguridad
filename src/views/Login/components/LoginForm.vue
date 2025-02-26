@@ -26,7 +26,6 @@
   </form>
 </template>
 
-
 <script setup lang="ts">
 import { ref } from 'vue';
 import InputComponent from '@/components/common/InputComponent.vue'
@@ -34,20 +33,24 @@ import ButtonComponent from '@/components/common/ButtonComponent.vue'
 import { validateEmail } from '@/hooks/useRegrex.ts'
 import { userApiSlice } from '@/stores/users/userApiSlice.ts'
 import { RouterLink } from 'vue-router';
+import { useLocalStorage } from '@vueuse/core'
+import { useRouter } from 'vue-router'
 import Swal from 'sweetalert2'
 
+const router = useRouter();
 const userApi = userApiSlice();
 
 const email = ref('');
 const password = ref('');
+const userToken = useLocalStorage('userToken', '');
 
 const handleSubmit = async () => {
   if (email.value === '' || password.value === '') {
-  Swal.fire({
-    icon: 'error',
-    title: 'Oops...',
-    text: 'Todos los campos son obligatorios!',
-  })
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Todos los campos son obligatorios!',
+    })
     return;
   }
   if (!validateEmail(email.value)) {
@@ -62,28 +65,30 @@ const handleSubmit = async () => {
 
   const responseStatus = {
     200: {
-        icon: 'success',
-        title: 'Bienvenido!',
-        text: 'Has iniciado sesión correctamente!',
+      icon: 'success',
+      title: 'Bienvenido!',
+      text: 'Has iniciado sesión correctamente!',
     },
     400: {
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Email o contraseña incorrectos!',
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Email o contraseña incorrectos!',
     },
     default: {
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Ha ocurrido un error en el servidor!',
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Ha ocurrido un error en el servidor!',
     },
   }
 
   Swal.fire(responseStatus[res.status] || responseStatus.default)
 
+  if (res.status == 200) {
+    userToken.value = res.data.token; // Almacena el token en el almacenamiento local
+    router.push('/dashboard');
+  }
 
-
-  console.log('Email:', email.value);
-  console.log('Password:', password.value);
+  console.log(res.data)
 };
 </script>
 

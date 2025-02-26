@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useLocalStorage } from '@vueuse/core'
 
 import HomeView from '../views/HomeView.vue'
 import LoginView from '@/views/Login/LoginView.vue'
@@ -24,7 +25,7 @@ const router = createRouter({
       component: RegisterView,
     },
     {
-      path: '/',
+      path: '/dashboard',
       name: 'Dashboard',
       component: HomeView,
     },
@@ -33,13 +34,16 @@ const router = createRouter({
       name: '404',
       component: View404,
     },
-
   ],
+})
 
-  // router.beforeEach((to, from, next) => {
-  //   if (to.name !== 'Login' && !isAuthenticated) next({ name: 'Login' })
-  //   else next()
-  // })
+router.beforeEach((to, from, next) => {
+  const userToken = useLocalStorage('userToken', null)
+  if (!userToken.value && to.name !== 'Login' && to.name !== 'Register' && to.name !== '404') {
+    next({ name: 'Login' })
+  } else {
+    next()
+  }
 })
 
 export default router
