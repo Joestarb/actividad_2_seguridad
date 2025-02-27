@@ -2,10 +2,24 @@
   <form @submit.prevent="handleSubmit" class="max-w-md mx-auto mt-5 p-6 bg-white rounded-lg">
     <div class="mb-4"></div>
     <div class="mb-4">
-      <InputComponent label-tittle="Email" type="email" v-model="email" required />
+      <InputComponent
+        label-tittle="Email"
+        type="email"
+        v-model="email" required
+        :="emailAttrs"
+      />
+      <span class=" text-red-500" v-if="errors.email">{{ errors.email }}</span>
     </div>
     <div class="mb-4">
-      <InputComponent label-tittle="contraseña" type="password" v-model="password" />
+      <InputComponent
+        label-tittle="contraseña"
+        type="password"
+        v-model="password"
+        :="passwordAttrs"
+
+      />
+      <span class="text-red-500" v-if="errors.password">{{ errors.password }}</span>
+
     </div>
     <div class="mb-6">
       <InputComponent
@@ -28,13 +42,24 @@ import { validateEmail } from '@/hooks/useRegrex.ts'
 import { userApiSlice } from '@/stores/users/userApiSlice.ts'
 import Swal from 'sweetalert2'
 import { useRouter } from 'vue-router'
+import { useForm } from 'vee-validate'
+import * as yup from 'yup'
 
 const router = useRouter();
 const userApi = userApiSlice();
 
-const email = ref('')
-const password = ref('')
 const confirmPassword = ref('')
+
+
+const { values, errors, defineField } = useForm({
+  validationSchema: yup.object({
+    email: yup.string().email().required(),
+    password: yup.string().required()
+  }),
+});
+const [email, emailAttrs] = defineField('email');
+const [password, passwordAttrs] = defineField('password');
+
 
 const handleSubmit = async () => {
   //validacion de inputs con js

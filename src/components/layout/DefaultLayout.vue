@@ -9,11 +9,12 @@
           <RouterLink to="/" class="text-xl font-bold text-[#F5F5F5]">My App Header</RouterLink>
         </div>
         <div class=" flex gap-5">
-          <RouterLink to="/" class=" text-white font-semibold">Notas</RouterLink>
-          <RouterLink to="/categories" class=" text-white font-semibold">Categorias</RouterLink>
+          <RouterLink to="/xss" class=" text-white font-semibold">XSS</RouterLink>
+          <RouterLink to="/" class=" text-white font-semibold">DDOS</RouterLink>
+          <RouterLink to="/" class=" text-white font-semibold">SQL Inyection</RouterLink>
+          <RouterLink to="/" class=" text-white font-semibold">Clickjacking</RouterLink>
           <ButtonComponent @click="logout" title="Cerrar sesion" own-style="" />
 
-          <RouterLink to="/vs" class=" text-white font-semibold">Watch</RouterLink>
 
         </div>
       </header>

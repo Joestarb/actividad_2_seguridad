@@ -7,8 +7,10 @@
         label-tittle="Email"
         type="email"
         v-model="email"
-
+        :="emailAttrs"
       />
+      <span class=" text-red-500" v-if="errors.email">{{ errors.email }}</span>
+
     </div>
     <div class="mb-6">
       <InputComponent
@@ -16,10 +18,15 @@
         label-tittle="Password"
         type="password"
         v-model="password"
+        :="passwordAttrs"
       />
+      <span class="text-red-500" v-if="errors.password">{{ errors.password }}</span>
+
     </div>
     <div>
 
+<!--      <pre>values: {{ values }}</pre>-->
+<!--      <pre>errors: {{ errors }}</pre>-->
       <ButtonComponent title="Login" ownStyle="" />
     </div>
     <p> No tienes una cuenta? <RouterLink to="/register" class=" text-blue-700 ">Registrate aqui</RouterLink></p>
@@ -35,13 +42,27 @@ import { userApiSlice } from '@/stores/users/userApiSlice.ts'
 import { RouterLink } from 'vue-router';
 import { useLocalStorage } from '@vueuse/core'
 import { useRouter } from 'vue-router'
+import { useForm } from 'vee-validate';
+import * as yup from 'yup';
 import Swal from 'sweetalert2'
+
+
+const { values, errors, defineField } = useForm({
+  validationSchema: yup.object({
+    email: yup.string().email().required(),
+    password: yup.string().required()
+
+  }),
+});
+const [email, emailAttrs] = defineField('email');
+const [password, passwordAttrs] = defineField('password');
+
+
 
 const router = useRouter();
 const userApi = userApiSlice();
 
-const email = ref('');
-const password = ref('');
+
 const userToken = useLocalStorage('userToken', '');
 
 const handleSubmit = async () => {

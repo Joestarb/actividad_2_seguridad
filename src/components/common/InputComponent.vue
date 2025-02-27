@@ -11,7 +11,10 @@
     :class="classes"
     class="w-full px-4 py-2 rounded-xl border border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700"
     @input="$emit('update:modelValue', $event.target.value)"
+    @blur="$emit('blur', $event)"
+    @change="$emit('change', $event)"
   />
+
 </template>
 
 <script setup lang="ts">
@@ -41,4 +44,5 @@ defineProps({
     default: false,
   },
 })
+defineEmits(['update:modelValue', 'blur', 'change'])
 </script>
