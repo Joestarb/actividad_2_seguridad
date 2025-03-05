@@ -105,11 +105,11 @@ const handleSubmit = async () => {
   Swal.fire(responseStatus[res.status] || responseStatus.default)
 
   if (res.status == 200) {
-    userToken.value = res.data.token; // Almacena el token en el almacenamiento local
+    userToken.value = JSON.stringify(res.data);
     router.push('/dashboard');
   }
 
-  console.log(res.data)
+  console.log(res.data.token)
 };
 </script>
 
